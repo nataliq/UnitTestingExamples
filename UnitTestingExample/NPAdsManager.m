@@ -30,6 +30,11 @@ NSString *const AdSystemIdKey = @"adSystemId";
 
 - (void)parseAdDataDictionary:(NSDictionary *)adData
 {
+    [self parseAdDataDictionary:adData completion:nil];
+}
+
+- (void)parseAdDataDictionary:(NSDictionary *)adData completion:(NPAdsManagerBlock)completion
+{
     NSAssert([adData isKindOfClass:[NSDictionary class]], @"Cannot parse ad data which is not a dectionary");
     if (![adData isKindOfClass:[NSDictionary class]]) {
         return;
@@ -40,6 +45,12 @@ NSString *const AdSystemIdKey = @"adSystemId";
     NSString *system = adData[@"adSystem"];
     
     [self persistInfoForAdId:adId wrapperIds:wrapperIds system:system];
+    
+    if (completion) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion([self wrapperIdForAdId:adId], [self systemIdForAdId:adId]);
+        });
+    }
 }
 
 - (void)parseAdDataWithProvider:(id<NPAdDataProvider>)dataProvider

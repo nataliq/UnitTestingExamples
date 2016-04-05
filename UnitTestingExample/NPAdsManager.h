@@ -16,7 +16,14 @@
 
 @end
 
+typedef void (^NPAdsManagerBlock)(NSString *wrapperId, NSString *systemId);
+
 @interface NPAdsManager : NSObject
+
+/**
+ *  Calls parseAdDataDictionary:completion: with the adData parameter and a nil completion.
+ */
+- (void)parseAdDataDictionary:(NSDictionary *)adData;
 
 /**
  *  Persists wrapper id & system id information associated with an ad id from the provided dictionary.
@@ -25,10 +32,11 @@
  *  If the wrapper id is missing it will persist the ad id as a wrapper id.
  *  If the system id is missing it will be nil.
  *
- *  @param adData A dictionary which contains string "adId" key (required), 
- *                an array for "adWrapperIds" key (optional) and a string for "adSystem" key (optional)
+ *  @param adData     A dictionary which contains string "adId" key (required),
+ *                    an array for "adWrapperIds" key (optional) and a string for "adSystem" key (optional).
+ *  @param completion A block executed asynchronously on the main thread when the parsing is completed.
  */
-- (void)parseAdDataDictionary:(NSDictionary *)adData;
+- (void)parseAdDataDictionary:(NSDictionary *)adData completion:(NPAdsManagerBlock)completion;
 
 /**
  *  Persists wrapper id & system id information associated with an ad id from the data provider.

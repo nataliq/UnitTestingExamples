@@ -262,4 +262,37 @@
     XCTAssertNoThrow([mockedManager verify]);
 }
 
+- (void)testThatCompletionBlockIsCalledWithCorrectValuesIfAdIdIsProvided
+{
+    NSDictionary *adData = @{@"adId" : @"123",
+                             @"adWrapperIds" : @[@"wrapper id 1", @"wrapper id 2"],
+                             @"adSystem": @"system id"};
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@""];
+    
+    [self.manager parseAdDataDictionary:adData completion:^(NSString *wrapperId, NSString *systemId) {
+        XCTAssertEqualObjects(wrapperId, @"wrapper id 1");
+        XCTAssertEqualObjects(systemId, @"system id");
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:0.001 handler:nil];
+}
+
+- (void)testThatCompletionBlockIsCalledWithNilValuesIfAdIdIsNotProvided
+{
+    NSDictionary *adData = @{@"adWrapperIds" : @[@"wrapper id 1", @"wrapper id 2"],
+                             @"adSystem": @"system id"};
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@""];
+    
+    [self.manager parseAdDataDictionary:adData completion:^(NSString *wrapperId, NSString *systemId) {
+        XCTAssertNil(wrapperId);
+        XCTAssertNil(systemId);
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:0.001 handler:nil];
+}
+
 @end
