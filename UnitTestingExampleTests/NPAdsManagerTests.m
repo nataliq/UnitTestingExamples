@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 
+@import OCMock;
+
 #import "NPAdsManager.h"
 
 @interface IDAdsManagerTest : XCTestCase
@@ -220,6 +222,28 @@
     
     NSString *wrapperId = [self.manager wrapperIdForAdId:@"123"];
     XCTAssertEqualObjects(wrapperId, @"wrapper id 2");
+}
+
+- (void)testParsingDataFromADataProvider
+{
+    NSArray *wrapperIds = @[@"wrapper id 1", @"wrapper id 2"];
+    
+//    // old syntax
+//    id dataProviderMock = [OCMockObject mockForProtocol:@protocol(NPAdDataProvider)];
+//    [[[dataProviderMock stub] andReturn:@"123"] adId];
+//    [[[dataProviderMock stub] andReturn:wrapperIds] wrapperIds];
+//    [[[dataProviderMock stub] andReturn:@"system id"] system];
+    
+    // new syntax
+    id dataProviderMock = OCMStrictProtocolMock(@protocol(NPAdDataProvider));
+    OCMStub([dataProviderMock adId]).andReturn(@"123");
+    OCMStub([dataProviderMock wrapperIds]).andReturn(wrapperIds);
+    OCMStub([dataProviderMock system]).andReturn(@"system id");
+    
+    [self.manager parseAdDataWithProvider:dataProviderMock];
+    
+    XCTAssertEqualObjects([self.manager wrapperIdForAdId:@"123"], @"wrapper id 1");
+    XCTAssertEqualObjects([self.manager systemIdForAdId:@"123"], @"system id");
 }
 
 @end
