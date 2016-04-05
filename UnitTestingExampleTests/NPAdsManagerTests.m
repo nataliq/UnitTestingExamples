@@ -246,4 +246,20 @@
     XCTAssertEqualObjects([self.manager systemIdForAdId:@"123"], @"system id");
 }
 
+- (void)testThatThePublicMethodWithDataProviderIsPersistingTheRightInformation
+{
+    NSArray *wrapperIds = @[@"wrapper id 1", @"wrapper id 2"];
+    
+    id mockedManager = OCMPartialMock(self.manager);
+    OCMExpect([mockedManager persistInfoForAdId:@"123" wrapperIds:wrapperIds system:@"system id"]);
+    
+    id dataProviderMock = OCMStrictProtocolMock(@protocol(NPAdDataProvider));
+    OCMStub([dataProviderMock adId]).andReturn(@"123");
+    OCMStub([dataProviderMock wrapperIds]).andReturn(wrapperIds);
+    OCMStub([dataProviderMock system]).andReturn(@"system id");
+    [self.manager parseAdDataWithProvider:dataProviderMock];
+    
+    XCTAssertNoThrow([mockedManager verify]);
+}
+
 @end

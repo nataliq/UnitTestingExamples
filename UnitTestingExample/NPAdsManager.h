@@ -41,6 +41,8 @@
  */
 - (void)parseAdDataWithProvider:(id<NPAdDataProvider>)dataProvider;
 
+- (void)persistInfoForAdId:(NSString *)adId wrapperIds:(NSArray *)wrapperIds system:(NSString *)system;
+
 - (NSString *)wrapperIdForAdId:(NSString *)adId;
 - (NSString *)systemIdForAdId:(NSString *)adId;
 
