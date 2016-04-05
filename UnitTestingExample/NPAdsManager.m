@@ -42,6 +42,13 @@ NSString *const AdSystemIdKey = @"adSystemId";
     [self persistInfoForAdId:adId wrapperIds:wrapperIds system:system];
 }
 
+- (void)parseAdDataWithProvider:(id<NPAdDataProvider>)dataProvider
+{
+    [self persistInfoForAdId:[dataProvider adId]
+                  wrapperIds:[dataProvider wrapperIds]
+                      system:[dataProvider system]];
+}
+
 - (void)persistInfoForAdId:(NSString *)adId wrapperIds:(NSArray *)wrapperIds system:(NSString *)system
 {
     if (![adId isKindOfClass:[NSString class]] || adId.length == 0) {

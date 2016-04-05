@@ -8,6 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol NPAdDataProvider <NSObject>
+
+- (NSString *)adId;
+- (NSArray *)wrapperIds;
+- (NSString *)system;
+
+@end
+
 @interface NPAdsManager : NSObject
 
 /**
@@ -21,6 +29,17 @@
  *                an array for "adWrapperIds" key (optional) and a string for "adSystem" key (optional)
  */
 - (void)parseAdDataDictionary:(NSDictionary *)adData;
+
+/**
+ *  Persists wrapper id & system id information associated with an ad id from the data provider.
+ *  Wrapper and system ids could be nil or non-empty strings.
+ *  If the ad id is missing the wrapper & system ids will be nil.
+ *  If the wrapper id is missing it will persist the ad id as a wrapper id.
+ *  If the system id is missing it will be nil.
+ *
+ *  @param dataProvider An object conforming NPAdDataProvider protocol.
+ */
+- (void)parseAdDataWithProvider:(id<NPAdDataProvider>)dataProvider;
 
 - (NSString *)wrapperIdForAdId:(NSString *)adId;
 - (NSString *)systemIdForAdId:(NSString *)adId;
